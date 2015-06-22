@@ -199,3 +199,17 @@ def detail(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     return render(request, 'polls/detail.html', {'question': question})
 ```
+ * Removing hardcoded URLs in templates
+```python
+<li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+```
+```python
+<li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+```
+
+# Part 4
+
+## Write a simple form
+
+## Use generic views
+
