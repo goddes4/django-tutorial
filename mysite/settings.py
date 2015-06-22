@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -105,3 +106,47 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,  'templates'),
 )
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s [%(levelname)5.5s] - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'complex': {
+            'format': '%(asctime)s %(process)5.5s|%(threadName)10.10s|%(levelname)5.5s|%(filename)20.20s:%(lineno)-3s %(name)s - %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    'handlers': {
+        'screen': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG',
+            'formatter': 'complex',
+            'stream': sys.stdout,
+        },
+        'file': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'level': 'DEBUG',
+            'formatter': 'complex',
+            'filename': '/ramdisk/logs/default.log',
+            'when': 'midnight',
+            'interval': 1,
+            'backupCount': 3,
+            'encoding': 'utf8',
+        },
+    },
+    # 'loggers': {
+        # 'myproject.custom': {
+        #     'handlers': ['screen',],
+        #     'level': 'ERROR',
+        #     'propagate': False,
+        # },
+    # },
+    'root': {
+        'handlers': ['screen', 'file'],
+        'level': 'DEBUG',
+    },
+}

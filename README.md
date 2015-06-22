@@ -1,5 +1,7 @@
 # django-tutorial
 
+# Part 1
+
 ## Creating a project
 ```shell
  $ django-admin startproject mysite
@@ -43,3 +45,26 @@
 ```shell
  $ python manage.py shell
 ```
+
+# Part 2
+
+## Admin site
+ * Admin site 를 만드는것은 많은 창의성을 요구하지 않으며, 반복된 지루한 작업이다.
+ * 장고에서는 모델에 대한 관리 인터페이스의 생성을 자동화 한다.
+ * 사이트 관리자가 admin site 에서 서비스할 컨텐츠를 추가하면, public site 에서 해당 내용을 보여준다.
+ * Admin site 는 사이트 방문자에 의해 사용될 수 없다.
+
+## Creating an admin user
+```shell
+ $ python manage.py makemigrations polls
+```
+
+## Make the poll app modifiable in the admin
+ * polls/admin.py 을 다음과 같이 수정한다.
+```python
+   from django.contrib import admin
+   from .models import Question
+   
+   admin.site.register(Question)
+```
+ 
