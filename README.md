@@ -212,4 +212,8 @@ def detail(request, question_id):
 ## Write a simple form
 
 ## Use generic views
+ * DetailView generic view 에 전달되는 primary key 값은 pk 로 네이밍 되어 있으므로, questoin_id -> pk 로 변경한다. 
+
+# Part 5
+
 

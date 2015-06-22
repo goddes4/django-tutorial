@@ -1,3 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4" />
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="432642876">
+    <data-source source="LOCAL" name="Django default" uuid="e95ca0fe-ff0b-4777-8906-a7fbd8056465">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:mysql:///mysite</jdbc-url>
+      <user-name>root</user-name>
+      <user-password>dfd2dfc5dfcedfdfdfcedfcedfc6df98</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
 
