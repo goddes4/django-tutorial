@@ -15,6 +15,24 @@
 ```
  * Model class 생성 (Question, Choice)
 
+## Database
+ * django 1.8 에서 mysql-connector-python 이 지원하지 않으며, 다음 저장소에서 해당 내용의 패치 버전을 설치해야 이를 해결할 수 있다.
+```shell
+ $ pip install git+https://github.com/multiplay/mysql-connector-python
+```
+```python
+DATABASES = {
+    'default': {
+        'ENGINE': 'mysql.connector.django',
+        'NAME': 'mysite',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+```
+
 ## Activating models
 ```shell
  $ python manage.py makemigrations polls
