@@ -85,4 +85,117 @@ DATABASES = {
    
    admin.site.register(Question)
 ```
+ * Customize the admin form
+```python
+   fields = ['pub_date', 'question_text']
+```
+```python
+   fieldsets = [
+       (None,               {'fields': ['question_text']}),
+       ('Date information', {'fields': ['pub_date'], 'classes': ['collapse']}),
+   ]
+```
+ * Adding related objects
+ * Customize the admin change list
+
+## Customize the admin look and feel
+ * Project directory (manage.py 가 존재하는) 에 tempalte/admin 디렉토리를 생성한다.  
+ * 'django/contrib/admin/templates' 디렉토리에서 base_site.html 파일을 위에서 생성한 경로에 복사한다.
+
+# Part 3
+  
+## Poll application views
+ * Question "index" page
+ * Question "detail" page
+ * Question "results" page
+ * Vote action
  
+## Write your first view
+ * polls/views.py 에 다음 코드를 입력한다.
+```python
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse("Hello, world. You're at the polls index.")
+```
+ * polls/urls.py 파일을 생성하고, 다음 코드를 입력한다.
+```python
+from django.conf.urls import url
+
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.index, name='index'),
+]
+``` 
+ * mysite/urls.py 에 다음 코드를 추가한다.
+```python
+from django.conf.urls import include, url
+from django.contrib import admin
+
+urlpatterns = [
+    url(r'^polls/', include('polls.urls')),
+    url(r'^admin/', include(admin.site.urls)),
+]
+```
+ * http://localhost:8000/polls/ 접속
+
+## Writing more views
+ * polls/views.py 에 다음코드를 삽입한다.
+```python
+
+def detail(request, question_id):
+    return HttpResponse("You're looking at question %s." % question_id)
+
+def results(request, question_id):
+    response = "You're looking at the results of question %s."
+    return HttpResponse(response % question_id)
+
+def vote(request, question_id):
+    return HttpResponse("You're voting on question %s." % question_id)
+```
+
+## Write views that actually do something
+ * polls 디렉토리 하위에 templates/polls 디렉토리를 생성한다.
+ * 위에서 생성한 디렉토리에 index.html 파일을 생성하고, 다음 내용을 추가한다.
+```python
+{% if latest_question_list %}
+    <ul>
+    {% for question in latest_question_list %}
+        <li><a href="/polls/{{ question.id }}/">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+```
+ * polls/views.py 파일의 index() function 의 내용을 수정한다. (2가지 방법 예시)
+```python
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    template = loader.get_template('polls/index.html')
+    context = RequestContext(request, {
+        'latest_question_list': latest_question_list,
+    })
+    return HttpResponse(template.render(context))
+```
+```python
+def index(request):
+    latest_question_list = Question.objects.order_by('-pub_date')[:5]
+    context = {'latest_question_list': latest_question_list}
+    return render(request, 'polls/index.html', context)
+```
+ * Rasing a 404 error
+```python
+def detail(request, question_id):
+    try:
+        question = Question.objects.get(pk=question_id)
+    except:
+        raise Http404("Question does not exist")
+    return render(request, 'polls/detail.html', {"question": question})
+```
+```python
+def detail(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    return render(request, 'polls/detail.html', {'question': question})
+```
