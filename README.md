@@ -74,7 +74,7 @@ DATABASES = {
 
 ## Creating an admin user
 ```shell
- $ python manage.py makemigrations polls
+ $ python manage.py createsuperuser
 ```
 
 ## Make the poll app modifiable in the admin
@@ -101,6 +101,7 @@ DATABASES = {
 ## Customize the admin look and feel
  * Project directory (manage.py 가 존재하는) 에 tempalte/admin 디렉토리를 생성한다.  
  * 'django/contrib/admin/templates' 디렉토리에서 base_site.html 파일을 위에서 생성한 경로에 복사한다.
+ * 해당 파일을 수정한다.
 
 # Part 3
   
