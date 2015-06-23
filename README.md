@@ -216,4 +216,100 @@ def detail(request, question_id):
 
 # Part 5
 
+# Setup a production web server
 
+## with standalone uWSGI
+ * A Web Server Gateway Interface
+ * the web client <-> uWSGI <-> django
+ * Basic test
+```python
+def application(env, start_response):
+    start_response('200 OK', [('Context-Type', 'text/html')])
+    return [b"Hello World"]
+```
+```shell
+uwsgi --http :8000 --wsgi-file test.py
+```
+
+## Deploying static files
+ * mysite.settings.py 에 다음 설정을 추가한다.
+```python
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+```
+```python
+python manage.py collectstatic
+```
+ * static 경로 지정
+```shell
+$ uwsgi --http-socket :8080 -w mysite.wsgi:application --process 2 --master --disable-logging --static-map /static=/root/django/mysite/static
+```
+
+## with nginx + uWSGI
+ * the web client <-> the web server <-> the socket <-> uWSGI <-> django
+ * A web server can serve files (HTML, images, CSS, etc) directly from the file system. (but django can't do this)
+ * Load balancing and High Availability
+
+```shell
+# mysite_nginx.conf
+
+# the upstream component nginx needs to connect to
+upstream django {
+    # server unix:///path/to/your/mysite/mysite.sock; # for a file socket
+    server 127.0.0.1:8001; # for a web port socket (we'll use this first)
+}
+
+# configuration of the server
+server {
+    # the port your site will be served on
+    listen      8000;
+    # the domain name it will serve for
+    server_name .example.com; # substitute your machine's IP address or FQDN
+    charset     utf-8;
+
+    # max upload size
+    client_max_body_size 75M;   # adjust to taste
+
+    # Django media
+    location /media  {
+        alias /path/to/your/mysite/media;  # your Django project's media files - amend as required
+    }
+
+    location /static {
+        alias /path/to/your/mysite/static; # your Django project's static files - amend as required
+    }
+
+    # Finally, send all non-media requests to the Django server.
+    location / {
+        uwsgi_pass  django;
+        include     /path/to/your/mysite/uwsgi_params; # the uwsgi_params file you installed
+    }
+}
+```
+ * Configuring uWSGI to run with a .ini file
+```shell
+# mysite_uwsgi.ini file
+[uwsgi]
+
+# Django-related settings
+# the base directory (full path)
+chdir           = /path/to/your/project
+# Django's wsgi file
+module          = project.wsgi
+# the virtualenv (full path)
+home            = /path/to/virtualenv
+
+# process-related settings
+# master
+master          = true
+# maximum number of worker processes
+processes       = 10
+# the socket (use the full path to be safe
+socket          = /path/to/your/project/mysite.sock
+# ... with appropriate permissions - may be needed
+# chmod-socket    = 664
+# clear environment on exit
+vacuum          = true
+```
+```shell
+$ wsgi --ini mysite_uwsgi.ini 
+```

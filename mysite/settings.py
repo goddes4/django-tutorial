@@ -80,9 +80,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'mysql.connector.django',
         'NAME': 'mysite',
-        'USER': 'root',
-        'PASSWORD': 'xoduddl2',
-        'HOST': '',
+        'USER': 'rainus',
+        'PASSWORD': '1234qwer',
+        'HOST': '192.168.220.27',
         'PORT': '',
     }
 }
